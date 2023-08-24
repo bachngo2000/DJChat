@@ -1,0 +1,2 @@
+About: The server app serves as the server and channel management system app, so it's going to provide all the logic, the API endpoints to retrieve a 
+list of severs and associated channels, and it hosts all the logic associated with managing or administrating servers in our application

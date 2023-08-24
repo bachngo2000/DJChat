@@ -1,0 +1,5 @@
+To start/activate the virtual environment in Python: .\venv\Scripts\activate
+
+To run Django server: python manage.py runserver
+
+To create a new folder/app: python manage.py startapp appName
