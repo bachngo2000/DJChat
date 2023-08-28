@@ -23,6 +23,9 @@ class ServerListViewSet(viewsets.ViewSet):
     def list(self, request):
         # capture the category id that is being passed into this endpoint from the get request that was sent
         category = request.query_params.get("category")
+        # number of servers
+        qty = request.query_params.get("qty")
+        by_user = request.query_params.get("by_user") == "true"
 
         # we're storing the category id/data if it exists
         if category:
@@ -30,6 +33,12 @@ class ServerListViewSet(viewsets.ViewSet):
             # self.queryset = self.queryset.filter(category=category)
             # filter by name
             self.queryset = self.queryset.filter(category__name=category)
+        if by_user:
+            user_id = request.user.id
+            self.queryset = self.queryset.filter(member=user_id)
+        if qty:
+            # # items from the beginning through int(qty)-1
+            self.queryset = self.queryset[: int(qty)]
 
         serializer = ServerSerializer(self.queryset, many=True)
         return Response(serializer.data)
