@@ -3,6 +3,8 @@ from django.db import models
 from django.dispatch import receiver
 from django.shortcuts import get_object_or_404
 
+from .validators import validate_icon_image_size, validate_image_file_exstension
+
 
 def server_icon_upload_path(instance, filename):
     return f"server/{instance.id}/server_icons/{filename}"
@@ -97,8 +99,18 @@ class Channel(models.Model):
     topic = models.CharField(max_length=100)
     # a server can have multiple channels, but a channel can belong to one server
     server = models.ForeignKey(Server, on_delete=models.CASCADE, related_name="channel_server")
-    banner = models.ImageField(upload_to=server_banner_upload_path, null=True, blank=True)
-    icon = models.ImageField(upload_to=server_icon_upload_path, null=True, blank=True)
+    banner = models.ImageField(
+        upload_to=server_banner_upload_path,
+        null=True,
+        blank=True,
+        validators=[validate_image_file_exstension],
+    )
+    icon = models.ImageField(
+        upload_to=server_icon_upload_path,
+        null=True,
+        blank=True,
+        validators=[validate_icon_image_size, validate_image_file_exstension],
+    )
 
     def save(self, *args, **kwargs):
         if self.id:
