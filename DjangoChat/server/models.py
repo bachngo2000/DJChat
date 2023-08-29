@@ -1,5 +1,22 @@
 from django.conf import settings
 from django.db import models
+from django.dispatch import receiver
+from django.shortcuts import get_object_or_404
+
+
+def server_icon_upload_path(instance, filename):
+    return f"server/{instance.id}/server_icons/{filename}"
+
+
+def server_banner_upload_path(instance, filename):
+    return f"server/{instance.id}/server_banner/{filename}"
+
+
+# method to specify where the files are stored
+def category_icon_upload_path(instance, filename):
+    # return the actual location of where we're going to store this image
+    return f"category/{instance.id}/category_icon/{filename}"
+
 
 # Create your models/tables here.
 
@@ -13,6 +30,32 @@ class Category(models.Model):
     name = models.CharField(max_length=100)
     # when the admin user adds a new role to the Category table, we don't have to supply a description, unlike name
     description = models.TextField(blank=True, null=True)
+    icon = models.FileField(upload_to=category_icon_upload_path, null=True, blank=True)
+
+    # method that allows us to, if we upload a new image, delete the old one
+    # save the new image, whenever we save smth in this model, this method will be initiated
+    def save(self, *args, **kwargs):
+        # check to see if this is a new category or we're just updating an existing category
+        # if the data does have an id, it means that the category that we're trying to save information about already exists
+        if self.id:
+            # initiate a query on the category table and grab the data related to the category we're trying to update
+            # get_object_or_404 - shortcut to create a query that's going to return one object or else a 404
+            existing = get_object_or_404(Category, id=self.id)
+            if existing.icon != self.icon:
+                existing.icon.delete(save=False)
+        super(Category, self).save(*args, **kwargs)
+
+    # Django signals - when an event takes place in the model here, we can capture the fact that that event has taken place, and we can then go ahead and
+    # perform additional tasks
+    # delete is an event, and we're looking out for it
+    @receiver(models.signals.pre_delete, sender="server.Category")
+    # if we delete a category, we also delete the image icon
+    def category_delete_files(sender, instance, **kwargs):
+        for field in instance._meta.fields:
+            if field.name == "icon":
+                file = getattr(instance, field.name)
+                if file:
+                    file.delete(save=False)
 
     # when we return objects from the Category table, we'll be able to easily identify that object by its name
     def __str__(self):
@@ -54,11 +97,29 @@ class Channel(models.Model):
     topic = models.CharField(max_length=100)
     # a server can have multiple channels, but a channel can belong to one server
     server = models.ForeignKey(Server, on_delete=models.CASCADE, related_name="channel_server")
+    banner = models.ImageField(upload_to=server_banner_upload_path, null=True, blank=True)
+    icon = models.ImageField(upload_to=server_icon_upload_path, null=True, blank=True)
 
-    # created a custom save method which allows us to modify the instance before it's saved to the database
     def save(self, *args, **kwargs):
-        self.name = self.name.lower()
+        if self.id:
+            existing = get_object_or_404(Channel, id=self.id)
+            if existing.icon != self.icon:
+                existing.icon.delete(save=False)
+            if existing.banner != self.banner:
+                existing.banner.delete(save=False)
         super(Channel, self).save(*args, **kwargs)
+
+    # Django signals - when an event takes place in the model here, we can capture the fact that that event has taken place, and we can then go ahead and
+    # perform additional tasks
+    # delete is an event, and we're looking out for it
+    @receiver(models.signals.pre_delete, sender="server.Channel")
+    # if we delete a category, we also delete the image icon
+    def channel_delete_files(sender, instance, **kwargs):
+        for field in instance._meta.fields:
+            if field.name == "icon" or file.name == "banner":
+                file = getattr(instance, field.name)
+                if file:
+                    file.delete(save=False)
 
     def __str__(self):
         return self.name
