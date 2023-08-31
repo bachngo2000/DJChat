@@ -1,4 +1,4 @@
-import {createTheme} from "@mui/material";
+import {createTheme, responsiveFontSizes} from "@mui/material";
 
 // build our own theme
 declare module "@mui/material/styles" {
@@ -18,7 +18,7 @@ declare module "@mui/material/styles" {
 
 //customize our theme
 export const createMuiTheme = () => {
-    const theme = createTheme({
+    let theme = createTheme({
 
         typography: {
             fontFamily: ['IBM Plex Sans', "sans-serif"].join(","),
@@ -37,6 +37,7 @@ export const createMuiTheme = () => {
             }
         }
     });
+    theme = responsiveFontSizes(theme);
     return theme;
 }
 
