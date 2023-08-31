@@ -9,7 +9,7 @@ const PrimaryAppBar = () => {
             <Toolbar variant="dense" sx={{height: theme.primaryAppBar.height, minHeight: theme.primaryAppBar.height}}>
                 <Link href="/" underline="none" color="inherit"> 
                     <Typography 
-                        variant="h5" 
+                        variant="h4" 
                         noWrap 
                         component="div" sx={{display:{fontWeight: 700, letterSpacing: "=-0.5px" } } }>
                         DJChat
