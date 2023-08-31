@@ -8,7 +8,7 @@ const PrimaryAppBar = () => {
     return(
         <AppBar sx = {{backgroundColor: theme.palette.background.default, borderBottom: `2px solid ${theme.palette.divider}`}}>
             <Toolbar variant="dense" sx={{height: theme.primaryAppBar.height, minHeight: theme.primaryAppBar.height}}>
-                <Box>
+                <Box sx={{display: {xs: "block", sm: "none"}}}>
                     <IconButton>
                         <MenuIcon />
                     </IconButton>
