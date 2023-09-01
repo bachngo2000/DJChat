@@ -1,16 +1,27 @@
-import { AppBar, Box, Drawer, IconButton, Link, Toolbar, Typography } from "@mui/material";
+import { AppBar, Box, Drawer, IconButton, Link, Toolbar, Typography, useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import MenuIcon from "@mui/icons-material/Menu"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 
 const PrimaryAppBar = () => {
     const [sideMenu, setSideMenu] = useState(false); 
     const theme = useTheme();
 
+    const isSmallScreen = useMediaQuery(theme.breakpoints.up("sm"));
+
+    useEffect(() => {
+        if (isSmallScreen && sideMenu) {
+            setSideMenu(false);
+        }
+    }, [isSmallScreen])
+
     const toggleDrawer = (open: boolean) =>
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        (event: React.MouseEvent) => {
+        (event: React.MouseEvent | React.KeyboardEvent) => {
+            if (event.type == "keydown" && ((event as React.KeyboardEvent).key === "Tab" || (event as React.KeyboardEvent).key === "Shift")) {
+                return;
+            }
             setSideMenu(open);
         };
 
