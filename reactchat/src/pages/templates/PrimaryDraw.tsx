@@ -18,7 +18,6 @@ const PrimaryDraw = () => {
             duration: theme.transitions.duration.enteringScreen,
         }),
         overFlowX: "hidden",
-        width: theme.primaryDraw.closed,
     });
 
     const closedMixin = () => ({
@@ -27,6 +26,7 @@ const PrimaryDraw = () => {
             duration: theme.transitions.duration.enteringScreen,
         }),
         overFlowX: "hidden",
+        width: theme.primaryDraw.closed,
     });
 
     const Drawer = styled(MuiDrawer, {})(({theme, open}) => ({
@@ -39,7 +39,7 @@ const PrimaryDraw = () => {
             "& .MuiDrawer-paper": openedMixin(),
         }),
         ...(!open && {
-            ...openedMixin(),
+            ...closedMixin(),
             "& .MuiDrawer-paper": closedMixin(),
         }),
     }));
@@ -63,7 +63,7 @@ const PrimaryDraw = () => {
         PaperProps={{
             sx: {
                 mt: `${theme.primaryAppBar.height}px`,
-                height: `calc(100vn - ${theme.primaryAppBar.height})`,
+                height: `calc(100vh - ${theme.primaryAppBar.height}px )`,
                 width: theme.primaryDraw.width,}
         }}
         >
