@@ -4,11 +4,15 @@ import {useTheme} from "@mui/material/styles";
 
 import axios from "axios";
 
+import useAxiosWithInterceptor from "../../helpers/jwtinterceptor";
+
 const SecondaryDraw = () => {
 
     const theme = useTheme();
 
-    axios.get("http://127.0.0.1:8000/api/server/select/?category=Internships").then(response => {
+    const jwtAxios = useAxiosWithInterceptor();
+
+    jwtAxios.get("http://127.0.0.1:8000/api/server/select/?category=Internships").then(response => {
         console.log(response.data);
     }).catch((error) => {
         console.log(error);

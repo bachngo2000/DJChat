@@ -2,6 +2,7 @@ from django.db.models import Count
 from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.exceptions import AuthenticationFailed, ValidationError
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from .models import Server
@@ -21,6 +22,7 @@ from .serializer import ServerSerializer
 class ServerListViewSet(viewsets.ViewSet):
     # represents a collection of all Server objects/data from the database
     queryset = Server.objects.all()
+    permission_classes = [IsAuthenticated]
 
     # list function in the viewSets is used for get request to retrieve a list of instances or objects from the database
     @server_list_docs
