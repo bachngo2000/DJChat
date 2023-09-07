@@ -1,8 +1,8 @@
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider} from "react-router-dom"
 import Home from "./pages/Home";
-import { ThemeProvider } from "@mui/material";
-import { createMuiTheme } from "./theme/theme";
 import Explore from "./pages/Explore";
+import ToggleColorMode from "./components/ToggleColorMode";
+
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -15,14 +15,12 @@ const router = createBrowserRouter(
   )
 );
 
-const App: React.FC = () => {
-  const theme = createMuiTheme();
+const App = () => {
   return (
-    <ThemeProvider theme={theme}>
-      <RouterProvider router={router}/>
-    </ThemeProvider>
+    <ToggleColorMode>
+      <RouterProvider router={router} />
+    </ToggleColorMode>
   );
-  
 };
 
 export default App;
