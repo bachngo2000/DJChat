@@ -18,6 +18,8 @@ class ServerSerializer(serializers.ModelSerializer):
 
     channel_server = ChannelSerializer(many=True)
 
+    category = serializers.StringRelatedField()
+
     class Meta:
         model = Server
         # fields = "__all__"

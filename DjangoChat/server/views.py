@@ -22,7 +22,7 @@ from .serializer import ServerSerializer
 class ServerListViewSet(viewsets.ViewSet):
     # represents a collection of all Server objects/data from the database
     queryset = Server.objects.all()
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     # list function in the viewSets is used for get request to retrieve a list of instances or objects from the database
     @server_list_docs

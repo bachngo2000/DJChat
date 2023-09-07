@@ -29,8 +29,9 @@ const useCrud = <T>(initalData: T[], apiURL: string): IuseCrud<T> => {
     const fetchData = async () => {
         setIsLoading(true)
         try{
-            // build an Axios request to the API Server through the interceptor
+            // build an Axios request to the API Server through the interceptor, await the return of that information
             const response = await jwtAxios.get(`${BASE_URL}${apiURL}`, {})
+            // while that happens, the rest of the code gets run
             const data = response.data
             //load up the data here
             setDataCRUD(data)

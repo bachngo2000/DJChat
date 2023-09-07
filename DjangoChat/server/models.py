@@ -89,16 +89,6 @@ class Server(models.Model):
     # a server can have multiple members or users, and a user can be a member of multiple servers: many to many relationship between server and account/user tables
     member = models.ManyToManyField(settings.AUTH_USER_MODEL)
 
-    def __str__(self):
-        return f"{self.name}-{self.id}"
-
-
-class Channel(models.Model):
-    name = models.CharField(max_length=100)
-    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="channel_owner")
-    topic = models.CharField(max_length=100)
-    # a server can have multiple channels, but a channel can belong to one server
-    server = models.ForeignKey(Server, on_delete=models.CASCADE, related_name="channel_server")
     banner = models.ImageField(
         upload_to=server_banner_upload_path,
         null=True,
@@ -114,24 +104,31 @@ class Channel(models.Model):
 
     def save(self, *args, **kwargs):
         if self.id:
-            existing = get_object_or_404(Channel, id=self.id)
+            existing = get_object_or_404(Server, id=self.id)
             if existing.icon != self.icon:
                 existing.icon.delete(save=False)
             if existing.banner != self.banner:
                 existing.banner.delete(save=False)
-        super(Channel, self).save(*args, **kwargs)
+        super(Server, self).save(*args, **kwargs)
 
-    # Django signals - when an event takes place in the model here, we can capture the fact that that event has taken place, and we can then go ahead and
-    # perform additional tasks
-    # delete is an event, and we're looking out for it
-    @receiver(models.signals.pre_delete, sender="server.Channel")
-    # if we delete a category, we also delete the image icon
-    def channel_delete_files(sender, instance, **kwargs):
+    @receiver(models.signals.pre_delete, sender="server.Server")
+    def server_delete_files(sender, instance, **kwargs):
         for field in instance._meta.fields:
-            if field.name == "icon" or file.name == "banner":
+            if field.name == "icon" or field.name == "banner":
                 file = getattr(instance, field.name)
                 if file:
                     file.delete(save=False)
+
+    def __str__(self):
+        return f"{self.name}-{self.id}"
+
+
+class Channel(models.Model):
+    name = models.CharField(max_length=100)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="channel_owner")
+    topic = models.CharField(max_length=100)
+    # a server can have multiple channels, but a channel can belong to one server
+    server = models.ForeignKey(Server, on_delete=models.CASCADE, related_name="channel_server")
 
     def __str__(self):
         return self.name
