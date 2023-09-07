@@ -2,6 +2,7 @@ import { AppBar, Box, Drawer, IconButton, Link, Toolbar, Typography, useMediaQue
 import { useTheme } from "@mui/material/styles";
 import MenuIcon from "@mui/icons-material/Menu"
 import { useEffect, useState } from "react";
+import ExploreCategories from "../../components/SecondaryDraw/ExploreCategories";
 
 
 const PrimaryAppBar = () => {
@@ -25,6 +26,16 @@ const PrimaryAppBar = () => {
             setSideMenu(open);
         };
 
+    const list = () => (
+        <Box
+            sx={{ paddingTop: `${theme.primaryAppBar.height}px`, minWidth: 200 }}
+            onClick={toggleDrawer(false)}
+            onKeyDown={toggleDrawer(false)}
+        >
+            <ExploreCategories />
+        </Box>
+        );
+
     return(
         <AppBar sx = {{ zIndex:(theme) => theme.zIndex.drawer + 2, backgroundColor: theme.palette.background.default, borderBottom: `2px solid ${theme.palette.divider}`}}>
             <Toolbar variant="dense" sx={{height: theme.primaryAppBar.height, minHeight: theme.primaryAppBar.height}}>
@@ -35,11 +46,7 @@ const PrimaryAppBar = () => {
                 </Box>
 
                 <Drawer anchor="left" open={sideMenu} onClose={toggleDrawer(false)}>
-                    {[...Array(100)].map((_, i) => (
-                        <Typography key={i} paragraph>
-                            {i + 1}
-                        </Typography>
-                    ))}
+                    {list()}
                 </Drawer>
                 
                 <Link href="/" underline="none" color="inherit"> 
