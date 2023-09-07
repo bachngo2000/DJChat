@@ -45,6 +45,7 @@ class Category(models.Model):
             existing = get_object_or_404(Category, id=self.id)
             if existing.icon != self.icon:
                 existing.icon.delete(save=False)
+        self.name = self.name.lower()
         super(Category, self).save(*args, **kwargs)
 
     # Django signals - when an event takes place in the model here, we can capture the fact that that event has taken place, and we can then go ahead and
