@@ -1,16 +1,27 @@
 from django.db.models import Count
 from django.shortcuts import render
+from drf_spectacular.utils import extend_schema
 from rest_framework import viewsets
 from rest_framework.exceptions import AuthenticationFailed, ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from .models import Server
+from .models import Category, Server
 from .schema import server_list_docs
-from .serializer import ServerSerializer
+from .serializer import CategorySerializer, ServerSerializer
 
 # views are Python functions or classes that receive a web request and return a web response. The response can be a simple HTTP response, an HTML template response, or an HTTP redirect response that redirects a user to another page.
 # Views hold the logic that is required to return information as a response in whatever form to the user. As a matter of best practice, the logic that deals with views is held in the views.py file in a Django app.
+
+
+class CategoryListViewSet(viewsets.ViewSet):
+    queryset = Category.objects.all()
+
+    @extend_schema(responses=CategorySerializer)
+    def list(self, request):
+        serializer = CategorySerializer(self.queryset, many=True)
+        return Response(serializer.data)
+
 
 # Creating an API Endpoint for filtering servers by category. The endpoint will be able to take in a parameter, which is the category ID, and return a list of servers
 # that are associated with that particular cateogory
