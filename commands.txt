@@ -7,3 +7,5 @@ To create a new folder/app: python manage.py startapp appName
 To make migrations: python manage.py makemigrations
 
 To migrate: python manage.py migrate
+
+To run reactchat: npm run dev
