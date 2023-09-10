@@ -112,8 +112,8 @@ class ServerListViewSet(viewsets.ViewSet):
             # items from the beginning through int(qty)-1
             self.queryset = self.queryset[: int(qty)]
         if by_serverid:
-            if not request.user.is_authenticated:
-                raise AuthenticationFailed()
+            # if not request.user.is_authenticated:
+            #     raise AuthenticationFailed()
             try:
                 self.queryset = self.queryset.filter(id=by_serverid)
                 if not self.queryset.exists():
