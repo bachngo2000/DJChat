@@ -32,17 +32,23 @@ const Server = () => {
   }, []);
 
   // Check if the channelId is valid by searching for it in the data fetched from the API
-  // const isChannel = (): boolean => {
-  //   if (!channelId) {
-  //     return true;
-  //   }
+  const isChannel = (): boolean => {
+    if (!channelId) {
+      return true;
+    }
 
-  //   return dataCRUD.some((server) =>
-  //     server.channel_server.some(
-  //       (channel) => channel.id === parseInt(channelId)
-  //     )
-  //   );
-  // };
+    return dataCRUD.some((server) =>
+      server.channel_server.some(
+        (channel) => channel.id === parseInt(channelId)
+      )
+    );
+  };
+
+  useEffect(() => {
+    if (!isChannel()) {
+      navigate(`/server/${serverId}`);
+    }
+  }, [isChannel, channelId]);
 
   return (
     <Box sx={{display: "flex"}}>
@@ -52,7 +58,7 @@ const Server = () => {
           <UserServers open={false} data={dataCRUD}/>
         </PrimaryDraw>
         <SecondaryDraw>
-          <ServerChannels/>
+          <ServerChannels data={dataCRUD}/>
         </SecondaryDraw>
         <Main>
           <MessageInterface/>
